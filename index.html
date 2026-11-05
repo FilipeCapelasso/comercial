@@ -864,7 +864,7 @@ async function asnSalva(id){const v=V.find(x=>x.id==id);if(!v)return;const per=$
 
 /* ---- v24: aba "Patrão" (resposta do Sr. Marcelo, leitura ao vivo e acessos à apresentação) ---- */
 let PAT=null,PAT_T=null;
-const PAT_SEC=[['hero','Capa'],['historia','História'],['desafio','Desafio'],['solucao','Solução'],['diferenciais','Diferenciais'],['estrategia','Estratégia'],['arquitetura','Arquitetura'],['financeira','Economia'],['modelo','Modelo'],['escala','Futuro'],['equipe','Equipe'],['decisao','Decisão']];
+const PAT_SEC=[['capa','Capa'],['origem','Origem'],['desafio','Desafio'],['beneficios','Benefícios'],['estrategia','Estratégia'],['atendimento','Atendimento'],['economia','Economia'],['modelo','Modelo'],['admin','Administração'],['crescimento','Crescimento'],['decisao','Decisão']];
 const patDur=s=>{s=Math.max(0,Math.round(+s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return h?h+' h '+String(m).padStart(2,'0')+' min':m+':'+String(r).padStart(2,'0')+' min'};
 const patDisp=d=>d==='celular'?'📱 Celular':d==='tablet'?'📱 Tablet':d?'💻 Computador':'-';
 function patShell(){return '<div id="pat"><div class="card"><p class="mu2">Carregando…</p></div></div>'}
