@@ -1909,20 +1909,25 @@ function okGrava(o){try{localStorage.setItem(PSOK,JSON.stringify(o))}catch(e){}}
 function zapLink(d){return 'https://wa.me/'+telZap((d.dados||{}).telefone)+'?text='+encodeURIComponent(msgZap(d))}
 /* abre o WhatsApp do vendedor uma única vez, só com a página visível (quando ele volta do app do banco) */
 function zapVai(){const o=okLe();if(!o||o.enviado||document.visibilityState!=='visible')return;if(!telZap((o.d.dados||{}).telefone))return;
-  o.enviado=true;okGrava(o);const u=zapLink(o.d);
-  try{toast('📲 Pagamento confirmado! Abrindo o seu WhatsApp com os seus acessos…')}catch(e){}
-  setTimeout(()=>{if(/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)){location.href=u;return}let w=null;try{w=window.open(u,'_blank')}catch(e){}if(!w)location.href=u},1400)}
+  o.enviado=true;okGrava(o);location.href=zapLink(o.d)}
+/* aviso pequeno, sem o card: aparece só se a pessoa voltar ao site depois */
+function zapAviso(){const o=okLe();if(!o||$('zpa'))return;const e=document.createElement('div');e.id='zpa';e.className='rsm';
+  e.innerHTML='<span>✅ Pagamento confirmado. Seus acessos foram para o seu WhatsApp.</span><button class="btn" id="zpb">Abrir no WhatsApp</button>';document.body.appendChild(e);
+  $('zpb').onclick=()=>{location.href=zapLink(o.d)}}
 const okOrig=ok;
 ok=function(d){const o=okLe();
   if(!d.senha&&o&&o.d&&o.d.slug===d.slug&&o.d.senha)d.senha=o.d.senha;   /* a senha só vem uma vez do servidor: guarda por 2 horas neste aparelho */
   if(!o||o.d.slug!==d.slug)okGrava({t:Date.now(),d,enviado:false});else{o.d=Object.assign({},o.d,d);okGrava(o)}
-  okOrig(d);zapVai()};
+  /* sem card de parabéns: fecha a janela do Pix e leva direto para o WhatsApp do próprio vendedor */
+  try{stop();clearInterval(ctT)}catch(e){}const bx=$('bx');if(bx){bx.className='bx';delete bx.dataset.guard;bx.innerHTML=''}
+  $('ov').classList.remove('on');document.body.style.overflow='';const r=$('rsm');if(r&&r.id==='rsm')r.remove();
+  const u=okLe();if(u&&!u.enviado&&document.visibilityState==='visible')zapVai();else zapAviso()};
 /* voltou ao navegador: confere o Pix na hora (o celular pausa a página em segundo plano) e segue para o WhatsApp */
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;let tk=null;try{tk=localStorage.getItem('ps_tk')}catch(e){}
-  if(tk&&$('bx')&&/\bpay\b/.test($('bx').className))chk(tk);zapVai()});
-addEventListener('pageshow',()=>zapVai());
-/* reabriu a página depois de ir ao WhatsApp: mostra de novo os acessos (por até 2 horas) */
-setTimeout(()=>{let pend=null;try{pend=localStorage.getItem('ps_pix')}catch(e){}const o=okLe();if(o&&o.enviado&&!pend&&!$('cf')){abreModal();okOrig(o.d)}},900);
+  if(tk&&$('bx')&&/\bpay\b/.test($('bx').className))chk(tk);const o=okLe();if(o&&!o.enviado){const a=$('zpa');if(a)a.remove();zapVai()}});
+addEventListener('pageshow',()=>{const o=okLe();if(o&&!o.enviado)zapVai()});
+/* reabriu a página depois de ir ao WhatsApp: só o aviso pequeno, por até 2 horas */
+setTimeout(()=>{let pend=null;try{pend=localStorage.getItem('ps_pix')}catch(e){}const o=okLe();if(o&&o.enviado&&!pend)zapAviso()},900);
 </script><style id="v82-sem-entrada">
 /* sem animacao de entrada: textos e secoes aparecem direto, sem desfoque e sem "surgir" ao rolar */
 #site .n-hero h1 .w-i,.n-lead,.n-try,.n-cta,.n-facts{opacity:1!important;filter:none!important;transform:none!important;animation:none!important}
