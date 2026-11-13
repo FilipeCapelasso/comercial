@@ -1899,7 +1899,13 @@ window.addEventListener('hashchange',route);load();route();resume();
     g('uf_t').textContent=on.length===R.length?'Aberto em todo o Brasil':on.length===1?'Hoje: aberto em '+on[0].nome:'Hoje: aberto em '+on.length+' estados';
     g('uf_p').textContent=on.length===R.length?'Vendedores de todos os estados já podem contratar.':'A contratação abre estado por estado. Os demais entram em breve.'},250);
 })();
-</script><script id="v80-lux">
+</script><style id="v82-sem-entrada">
+/* sem animacao de entrada: textos e secoes aparecem direto, sem desfoque e sem "surgir" ao rolar */
+#site .n-hero h1 .w-i,.n-lead,.n-try,.n-cta,.n-facts{opacity:1!important;filter:none!important;transform:none!important;animation:none!important}
+#site .rv,#site .rv.in,.rv,.rv.in{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+#site .rv.in .sol-g>.card,#site .rv.in .n-st>div,#site .rv.in .n-bn>div,#site .rv.in details,#site .rv.in .pl>.plan{animation:none!important;opacity:1!important}
+</style>
+<script id="v80-lux">
 (function(){
  const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
  /* título do topo: entra palavra por palavra */
