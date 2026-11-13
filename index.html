@@ -1899,6 +1899,30 @@ window.addEventListener('hashchange',route);load();route();resume();
     g('uf_t').textContent=on.length===R.length?'Aberto em todo o Brasil':on.length===1?'Hoje: aberto em '+on[0].nome:'Hoje: aberto em '+on.length+' estados';
     g('uf_p').textContent=on.length===R.length?'Vendedores de todos os estados já podem contratar.':'A contratação abre estado por estado. Os demais entram em breve.'},250);
 })();
+
+/* ===== v26: acessos entregues direto no WhatsApp do próprio vendedor ===== */
+function msgZap(d){const k=d.dados||{},L=d.links||{},vence=d.vence?fdh(d.vence):'';
+return `Olá, ${k.nome||''}! Seguem os seus acessos:\n\n🏍️ Seu site de vendas dos clientes:\n${L.vitrine}\n\n📝 Ficha de financiamento (CDC): ${L.cdc}\n\n📄 Pré-contrato de consórcio (CNH): ${L.cnh}\n\n\n🔐 Painel do vendedor: ${L.admin}\n\nE-mail: ${k.email||''}\n\nSenha: ${d.senha||'a mesma que você já usa'}\n\n📋 Plano completo${d.periodo?' ('+({mensal:'mensal',semestral:'6 meses',anual:'anual'}[d.periodo]||d.periodo)+')':''}${d.valor!=null?' · '+R(d.valor):''}${vence?`\n⏳ Válido até: ${vence}`:''}\n\nGuarde esta mensagem e troque a senha no primeiro acesso.`}
+const PSOK='ps_ok';
+function okLe(){try{const o=JSON.parse(localStorage.getItem(PSOK)||'null');if(!o||!o.d||Date.now()-(+o.t||0)>72e5){localStorage.removeItem(PSOK);return null}return o}catch(e){return null}}
+function okGrava(o){try{localStorage.setItem(PSOK,JSON.stringify(o))}catch(e){}}
+function zapLink(d){return 'https://wa.me/'+telZap((d.dados||{}).telefone)+'?text='+encodeURIComponent(msgZap(d))}
+/* abre o WhatsApp do vendedor uma única vez, só com a página visível (quando ele volta do app do banco) */
+function zapVai(){const o=okLe();if(!o||o.enviado||document.visibilityState!=='visible')return;if(!telZap((o.d.dados||{}).telefone))return;
+  o.enviado=true;okGrava(o);const u=zapLink(o.d);
+  try{toast('📲 Pagamento confirmado! Abrindo o seu WhatsApp com os seus acessos…')}catch(e){}
+  setTimeout(()=>{if(/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)){location.href=u;return}let w=null;try{w=window.open(u,'_blank')}catch(e){}if(!w)location.href=u},1400)}
+const okOrig=ok;
+ok=function(d){const o=okLe();
+  if(!d.senha&&o&&o.d&&o.d.slug===d.slug&&o.d.senha)d.senha=o.d.senha;   /* a senha só vem uma vez do servidor: guarda por 2 horas neste aparelho */
+  if(!o||o.d.slug!==d.slug)okGrava({t:Date.now(),d,enviado:false});else{o.d=Object.assign({},o.d,d);okGrava(o)}
+  okOrig(d);zapVai()};
+/* voltou ao navegador: confere o Pix na hora (o celular pausa a página em segundo plano) e segue para o WhatsApp */
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;let tk=null;try{tk=localStorage.getItem('ps_tk')}catch(e){}
+  if(tk&&$('bx')&&/\bpay\b/.test($('bx').className))chk(tk);zapVai()});
+addEventListener('pageshow',()=>zapVai());
+/* reabriu a página depois de ir ao WhatsApp: mostra de novo os acessos (por até 2 horas) */
+setTimeout(()=>{let pend=null;try{pend=localStorage.getItem('ps_pix')}catch(e){}const o=okLe();if(o&&o.enviado&&!pend&&!$('cf')){abreModal();okOrig(o.d)}},900);
 </script><style id="v82-sem-entrada">
 /* sem animacao de entrada: textos e secoes aparecem direto, sem desfoque e sem "surgir" ao rolar */
 #site .n-hero h1 .w-i,.n-lead,.n-try,.n-cta,.n-facts{opacity:1!important;filter:none!important;transform:none!important;animation:none!important}
