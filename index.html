@@ -1287,7 +1287,7 @@ function drawDest(){const e=$('dest'),sec=$('vendedores'),nv=$('nvd');if(!destaq
 const vcard=v=>{const f=/^(data:image\/|https:\/\/)/.test(v.foto||'')?v.foto:'',u=/^https?:\/\//.test(v.site||'')?v.site:'';
 return `<div class="vd rv"><div class="av">${f?`<img alt="" src="${esc(f)}">`:`<span>${esc((v.nome||'?').trim().charAt(0).toUpperCase())}</span>`}</div><b>${esc(v.nome)}</b>${u?`<a class="btn o" href="${esc(u)}" target="_blank" rel="noopener">Visitar site →</a>`:''}</div>`}; const MAXV=8,G={};destaques.forEach(v=>{const k=(v.uf||'AC').toUpperCase();(G[k]=G[k]||{uf:k,nome:v.regiao||k,l:[]}).l.push(v)});
  const RG=Object.values(G).sort((x,y)=>x.uf==='AC'?-1:y.uf==='AC'?1:x.nome.localeCompare(y.nome,'pt'));
- const rh=g=>`<h3 class="vr-h"><span>${esc(g.nome)}</span><small>${g.l.length} vendedor${g.l.length>1?'es':''}</small></h3>`;
+ const rh=g=>`<h3 class="vr-h"><span>${esc(g.nome)}</span></h3>`;
  const g0=RG[0],first=g0.l.slice(0,MAXV),rest0=g0.l.slice(MAXV),outras=RG.slice(1);
  e.innerHTML=rh(g0)+'<div class="vg">'+first.map(vcard).join('')+'</div>';e.className='';const w0=$('vx_wrap');if(w0)w0.remove();
  const nRest=rest0.length+outras.reduce((n,g)=>n+g.l.length,0);
