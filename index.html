@@ -2035,5 +2035,14 @@ setTimeout(()=>{let pend=null;try{pend=localStorage.getItem('ps_pix')}catch(e){}
  document.addEventListener('pointermove',e=>{const b=e.target.closest&&e.target.closest('#site .n-cta .btn,#site .n-fin .btn');if(!b)return;const r=b.getBoundingClientRect();b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.12)+'px,'+((e.clientY-r.top-r.height/2)*.2-2)+'px)'},{passive:true});
  document.addEventListener('pointerout',e=>{const b=e.target.closest&&e.target.closest('#site .n-cta .btn,#site .n-fin .btn');if(b)b.style.transform=''},{passive:true});
 })();
+
+/* ===== v32: erros do navegador vão para o admin geral (sem dados do cliente; no máximo 3 por carregamento) ===== */
+(function(){if(typeof sb==='undefined'||!sb)return;let n=0;const seen=new Set();
+  function manda(onde,msg,det){try{if(n>=3)return;const k=onde+'|'+msg;if(seen.has(k))return;seen.add(k);n++;
+    if(/ResizeObserver|Script error\.?$|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
+    sb.rpc('registrar_erro_front',{p:{onde:'comercial'+(location.hash==='#admin'?'/admin':''),msg:String(msg).slice(0,300),det:String(det||'').slice(0,1200)}}).then(()=>{},()=>{})}catch(e){}}
+  addEventListener('error',e=>{if(e&&e.message)manda('js',e.message,(e.filename||'')+':'+(e.lineno||0)+' '+((e.error&&e.error.stack)||''))});
+  addEventListener('unhandledrejection',e=>{const r=e&&e.reason;manda('promise',(r&&(r.message||r.msg))||String(r),(r&&r.stack)||'')});
+})();
 </script>
 </body></html>
