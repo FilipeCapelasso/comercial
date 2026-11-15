@@ -1637,7 +1637,8 @@ const BR_C={red:'#e4172b',red2:'#b5101f',ink:'#16161a',off:'#9a9aa6'};
 const BR_VIS={center:[-55.5,-14.2],zoom:3.35,pitch:38,bearing:-6};
 const BR_LOC={'NavigationControl.ZoomIn':'Aproximar','NavigationControl.ZoomOut':'Afastar','NavigationControl.ResetBearing':'Apontar para o norte (arraste para girar e inclinar)','FullscreenControl.Enter':'Tela cheia','FullscreenControl.Exit':'Sair da tela cheia','AttributionControl.ToggleAttribution':'Créditos do mapa','Map.Title':'Mapa do Brasil','ScrollZoomBlocker.CtrlMessage':'Use Ctrl + rolagem para aproximar','ScrollZoomBlocker.CmdMessage':'Use ⌘ + rolagem para aproximar','TouchPanBlocker.Message':'Use dois dedos para mover o mapa'};
 function brasilH(){return '<div id="brw"></div>'}
-function brGeoUrl(){return (/(^|\.)sitevendedor\.com$/.test(location.hostname)?'/comercial/':'/')+'br-uf.json?v=1'}
+const brBase=()=>/(^|\.)sitevendedor\.com$/.test(location.hostname)?'/comercial/':'/';
+function brGeoUrl(){return brBase()+'br-uf.json?v=1'}
 function brRM(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
 function brGL(){try{const c=document.createElement('canvas');return !!(c.getContext('webgl2')||c.getContext('webgl'))}catch(e){return false}}
 const brDt=d=>{try{return new Date(d).toLocaleDateString('pt-BR')}catch(e){return'-'}};
@@ -1809,7 +1810,7 @@ async function brMapa(){const el=$('brmap');if(!el||BR.map||BR.falhou)return;
   if(!brGL())return brFallback('Este navegador está com o WebGL desligado, por isso mostro o mapa simples.');
   brMsg('Carregando o mapa 3D…');
   try{if(!$('mlcss')){const l=document.createElement('link');l.id='mlcss';l.rel='stylesheet';l.href=ML_B+'maplibre-gl.css';document.head.appendChild(l)}
-    const [ml,st,geo]=await Promise.all([import(ML_B+'maplibre-gl.mjs'),fetch(BR_SRC.estilo).then(r=>{if(!r.ok)throw Error('mapa base '+r.status);return r.json()}),fetch(brGeoUrl()).then(r=>{if(!r.ok)throw Error('limites dos estados '+r.status);return r.json()})]);
+    const [ml,st,geo]=await Promise.all([import(ML_B+'maplibre-gl.mjs').then(m=>{try{m.setWorkerUrl(location.origin+brBase()+'maplibre-gl-worker-'+ML_V+'.mjs')}catch(e){}return m}),fetch(BR_SRC.estilo).then(r=>{if(!r.ok)throw Error('mapa base '+r.status);return r.json()}),fetch(brGeoUrl()).then(r=>{if(!r.ok)throw Error('limites dos estados '+r.status);return r.json()})]);
     BR.ml=ml;BR.geo=geo;const rm=brRM();st.projection={type:'globe'};
     const map=BR.map=new ml.Map({container:el,style:st,center:rm?BR_VIS.center:[-52,-12],zoom:rm?BR_VIS.zoom:1.35,pitch:rm?BR_VIS.pitch:0,bearing:rm?BR_VIS.bearing:0,minZoom:1,maxZoom:17.5,maxPitch:80,attributionControl:{compact:true,customAttribution:'Limites estaduais: IBGE (geodata-br-states, MIT) · Municípios: IBGE (municipios-brasileiros, MIT)'},locale:BR_LOC,fadeDuration:200});
     map.addControl(new ml.NavigationControl({visualizePitch:true,showCompass:true,showZoom:true}),'top-right');
@@ -1817,6 +1818,7 @@ async function brMapa(){const el=$('brmap');if(!el||BR.map||BR.falhou)return;
     map.addControl(new ml.ScaleControl({unit:'metric',maxWidth:110}),'bottom-right');
     map.on('error',e=>{const m=String((e&&e.error&&e.error.message)||'');if(/abort/i.test(m))return;if(Date.now()-BR.avisoMapa>30000){BR.avisoMapa=Date.now();const a=$('bral');if(a&&!BR.erro){a.textContent='Parte do mapa (fundo, relevo ou satélite) não carregou. Confira a internet.';setTimeout(()=>{if(a.textContent.startsWith('Parte do mapa'))a.textContent=''},9000)}}});
     map.on('load',()=>{try{brLayers()}catch(e){console.error(e);return brFallback('O mapa 3D falhou ao montar as camadas ('+e.message+').')}BR.pronto=true;brMsg('');if(innerWidth<900){const at=el.querySelector('.maplibregl-ctrl-attrib');if(at){at.removeAttribute('open');at.classList.remove('maplibregl-compact-show')}}brDados();brRelevo();if(BR.sel)brSel(BR.sel,'f');else if(!rm)map.flyTo(Object.assign({duration:4200,curve:1.5,essential:false},BR_VIS))});
+    setTimeout(()=>{if(!BR.pronto&&!BR.falhou)brMsg('O mapa 3D está demorando para carregar. Confira a internet ou toque em Atualizar e recarregue a página.')},30000);
     map.on('pitchend',()=>{const p=$('brpt');if(p)p.value=Math.round(map.getPitch())});
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&BR.pick)brPickFim(null)});
   }catch(e){console.error(e);brFallback('Não consegui carregar o mapa 3D ('+((e&&e.message)||e)+'). Mostro o mapa simples enquanto isso.')}}
