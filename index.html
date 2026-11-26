@@ -3007,7 +3007,7 @@ setTimeout(()=>{let pend=null;try{pend=localStorage.getItem('ps_pix')}catch(e){}
 #adm .a9-hb-q .a9-qi{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:12px;background:color-mix(in srgb,var(--c) 30%,transparent);color:#fff;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,transparent)}
 #adm .a9-hb-q .a9-qi svg{width:20px;height:20px}#adm .a9-hb-q .a9-ql{flex:1}#adm .a9-hb-q kbd{background:#ffffff14;border-color:#ffffff26;color:#dbe3f5}
 /* KPIs com minigráfico */
-#adm .a9-k1-g{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin:0 0 16px}
+#adm .a9-k1-g{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,196px),1fr));margin:0 0 16px}
 #adm .a9-k1{position:relative;padding:18px 18px 14px;border-radius:20px;background:var(--pn);border:1px solid var(--pb);overflow:hidden;display:flex;flex-direction:column;gap:6px;transition:transform .2s,border-color .2s,box-shadow .2s}
 #adm .a9-k1::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--c);opacity:.9}
 #adm .a9-k1:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 22px 40px -26px var(--c)}
@@ -3045,19 +3045,19 @@ setTimeout(()=>{let pend=null;try{pend=localStorage.getItem('ps_pix')}catch(e){}
 /* navegação: ícones nítidos e nome da marca no menu */
 #adm:not(.dk) .a9-ti,#adm:not(.dk) .a9-sb-b{display:none}
 #adm#adm.dk #ad>.tabs button::before{display:none}
-#adm#adm.dk #ad>.tabs button .a9-ti{width:20px;height:20px;flex:none}
-#adm .a9-sb-b{display:flex;align-items:center;gap:12px;padding:4px 8px 16px}
-#adm .a9-sb-l svg{height:30px;width:auto;display:block}#adm .a9-sb-n{display:flex;flex-direction:column;gap:2px;min-width:0}#adm .a9-sb-n b{font:800 15.5px Sora,Inter,sans-serif;color:var(--tx);white-space:nowrap}#adm .a9-sb-n small{font-size:12px;color:var(--mu)}
+#adm#adm.dk #ad>.tabs button .a9-ti{width:24px;height:24px;flex:none}
+#adm .a9-sb-b{display:flex;align-items:center;gap:12px;padding:2px 8px clamp(8px,1.6vh,16px)}
+#adm .a9-sb-l svg{height:36px;width:auto;display:block}#adm .a9-sb-n{display:flex;flex-direction:column;gap:2px;min-width:0}#adm .a9-sb-n b{font:800 18px Sora,Inter,sans-serif;color:var(--tx);white-space:nowrap}#adm .a9-sb-n small{font-size:13.5px;color:var(--mu)}
 @media(min-width:1000px){
- #adm#adm.dk .w{grid-template-columns:clamp(232px,15vw,280px) minmax(0,1fr);column-gap:clamp(22px,2.2vw,40px);padding-left:0!important;padding-top:0!important}
+ #adm#adm.dk .w{grid-template-columns:clamp(272px,17vw,330px) minmax(0,1fr);column-gap:clamp(22px,2.2vw,40px);padding-left:0!important;padding-top:0!important}
  #adm#adm.dk .w>.adm-top{grid-column:2;grid-row:1}
- #adm#adm.dk #ad>.tabs{grid-column:1;grid-row:1 / span 400;position:sticky;top:0;height:100dvh!important;max-height:none!important;margin:0;padding:18px 14px 22px;gap:2px;overflow-y:auto;scrollbar-width:thin;border:0;border-right:1px solid var(--ln);border-radius:0 26px 26px 0;background:linear-gradient(180deg,#0f1624,#0a0f19);box-shadow:22px 0 60px -42px #000}
- #adm#adm.dk #ad>.tabs button{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;border-radius:12px;background:transparent;color:var(--mu);font:600 14px Inter,system-ui,sans-serif;box-shadow:none;text-align:left}
+ #adm#adm.dk #ad>.tabs{grid-column:1;grid-row:1 / span 400;position:sticky;top:0;height:100dvh!important;max-height:none!important;margin:0;padding:clamp(12px,2vh,20px) 16px 20px;gap:2px;overflow-y:auto;scrollbar-width:thin;border:0;border-right:1px solid var(--ln);border-radius:0 26px 26px 0;background:linear-gradient(180deg,#0f1624,#0a0f19);box-shadow:22px 0 60px -42px #000}
+ #adm#adm.dk #ad>.tabs button{display:flex;align-items:center;gap:14px;width:100%;padding:clamp(7px,1.25vh,14px) 16px;border:0;border-radius:14px;background:transparent;color:var(--mu);font:600 clamp(16px,1.15vw,19px) Inter,system-ui,sans-serif;box-shadow:none;text-align:left}
  #adm#adm.dk #ad>.tabs button:hover{background:#ffffff0b;color:var(--tx)}
  #adm#adm.dk #ad>.tabs button.on{background:linear-gradient(90deg,#ff3b4e2e,#ff3b4e0a);color:#fff;box-shadow:inset 3px 0 0 var(--red)}
  #adm#adm.dk #ad>.tabs button.on .a9-ti{color:#ff6b78}
- #adm#adm.dk #ad>.tabs .tsep{margin:18px 10px 6px;padding:0;border:0}
- #adm#adm.dk #ad>.tabs .tsep::before{font:600 12px Inter,system-ui,sans-serif;letter-spacing:.02em;text-transform:none;color:var(--mu)}
+ #adm#adm.dk #ad>.tabs .tsep{margin:clamp(10px,1.8vh,24px) 12px 4px;padding:0;border:0}
+ #adm#adm.dk #ad>.tabs .tsep::before{font:700 clamp(14px,1vw,16px) Inter,system-ui,sans-serif;letter-spacing:.02em;text-transform:none;color:#a9b5cc}
  #adm#adm.dk .adm-top{top:0;margin:0;padding:14px 0 16px;border:0;border-radius:0;box-shadow:none;background:linear-gradient(180deg,#080b12 72%,#080b1200)}
  #adm#adm.dk .adm-top .logo{display:none}
  #adm#adm.dk .adm-k{margin-right:auto;max-width:520px}
