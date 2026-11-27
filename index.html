@@ -1751,7 +1751,7 @@ if(tab=='calc')h='<div id="fint" class="card"><p class="pl-i">Carregando a taxa 
 if(tab=='cfg')h=`<div class="grid">${cfgSec('Marca, endereços e lojas','Vale para todos os sites dos vendedores')}${cfgNovosHtml()}${cfgSec('Vendedores no site comercial','Quem aparece primeiro para os visitantes')}${ordHtml()}${cfgSec('Pagamento, catálogo e preços','Cobrança da plataforma e entrega do catálogo')}<div class="card"><h3>Mercado Pago</h3><p style="color:var(--m);font-size:14px">Status: ${A.config.mp?'<b style="color:var(--ok)">token configurado</b>':'<b style="color:var(--er)">token ausente</b>'}</p><label>Access Token (APP_USR-...)</label><input id="tk" type="password" placeholder="cole aqui e salve"><div style="margin-top:12px"><button class="btn" onclick="acao({acao:'token',valor:$('tk').value}).then(()=>{$('tk').value='';carregar()})">Salvar token</button> <button class="btn o" onclick="acao({acao:'testar'}).then(r=>toast(r.ok?'Conectado: '+r.conta:'Falhou: '+r.conta))">Testar</button></div><p style="color:var(--m);font-size:12px;margin-top:12px">O sistema confere os pagamentos pendentes a cada minuto, mesmo com a página fechada. Se preferir, force a conferência abaixo.</p><button class="btn o" style="margin-top:8px" onclick="acao({acao:'reverificar'}).then(r=>{toast(r.verificados+' pedidos verificados');carregar()})">Reverificar pendentes</button></div><div class="card" id="pa_box"><h3>Pix Automático</h3><p style="color:var(--m);font-size:14px">Carregando…</p></div>${(setTimeout(paAdmCarrega,0),'')}
 <div class="card"><h3>Catálogo das motos</h3><p style="color:var(--m);font-size:14px">Todo vendedor novo já recebe o catálogo geral completo (nomes, fotos, preços, descrição, cores e planos de consórcio). Use o botão para entregar agora as motos novas a todos os vendedores.</p><button class="btn" style="margin-top:12px" id="bst" onclick="syncTodos()">Sincronizar todos os vendedores</button></div>
 ${A.planos.filter(p=>p.active!==false).map(p=>`<div class="card"><h3>Preços do ${esc(String(p.name).toLowerCase())}</h3><label>Mensal (R$)</label><input id="m_${esc(p.id)}" type="number" step="0.01" value="${p.monthly_price}"><label>6 meses (R$)</label><input id="s_${esc(p.id)}" type="number" step="0.01" value="${p.semiannual_price??''}"><label>Anual (R$)</label><input id="a_${esc(p.id)}" type="number" step="0.01" value="${p.annual_price}"><button class="btn" style="margin-top:12px" onclick="acao({acao:'plano',id:'${esc(p.id)}',mensal:$('m_${esc(p.id)}').value,anual:$('a_${esc(p.id)}').value,semestral:$('s_${esc(p.id)}').value}).then(()=>{toast('Preços salvos');load()})">Salvar</button></div>`).join('')}</div>`;
-$('ad').innerHTML=`<div class="tabs"><div class="a9-sb-b"><span class="a9-sb-l">${SB_LGI}</span><span class="a9-sb-n"><b>Site do Vendedor</b><small>Admin geral</small></span></div><i class="tsep" data-g="Gestão" aria-hidden="true"></i>${tabs.map(t=>t[0]=='|'?`<i class="tsep" data-g="${t[1]}" aria-hidden="true"></i>`:`<button data-t="${t[0]}" class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';pinta()">${ico(t[0])}<span class="tl">${t[1]}</span><span class="ts">${t[2]||t[1]}</span>${t[0]=='chat'&&CHN>0?`<span class="tbn">${CHN}</span>`:''}${t[0]=='av'&&AVN>0?`<span class="tbn">${AVN>99?'99+':AVN}</span>`:''}</button>`).join('')}</div>${h}${tab=='cfg'?cfgSec('Site de vendas','O que o visitante vê antes de contratar',1)+cartShell()+cfgSec('Segurança e ferramentas','',1)+'<div class="card"><h3>🔒 Isolamento das personalizações</h3><p style="color:var(--m);font-size:14px;margin:0 0 12px">Confere, com os vendedores reais, que o visual de um site nunca aparece no site de outro vendedor. O teste simula cada vendedor salvando uma cor e olha todos os sites. Nada fica gravado.</p><button class="btn o" id="iso_b" onclick="isoTestar()">Rodar teste agora</button><div id="iso_r"></div></div><p class="pl-i" style="margin-top:22px">Ferramenta avançada: <a href="#" onclick="tab=\'img\';pinta();return false" style="color:var(--g2)">otimizar imagens do site</a></p><p class="pl-i">Versão do site: 11/11/2026 · planos mensal, 6 meses e de 2 a 24 meses · prazo contado 24 h por dia · expansão por estado</p>':tab=='img'?'<p class="pl-i"><a href="#" onclick="tab=\'cfg\';pinta();return false" style="color:var(--g2)">← voltar às configurações</a></p>':''}`;if(tab=='sis')sisCarrega();if(tab=='div')divCarrega();if(tab=='av')avCarrega();if(tab=='cad')cadCarrega();agMostra();calcMostra();if(tab=='dash'){metaLoad();metaiLoad();saudeLoad()}if(tab=='cfg')cartLoad();try{const o=document.querySelector('#ad .tabs .on');if(o)o.scrollIntoView({block:'nearest',inline:'nearest'})}catch(e){}if(tab=='nov')novLoad();if(tab=='exp')expLoad();if(tab=='parc')parcLoad();if(tab=='sup')supLoad();if(tab=='brasil')brMount();if(tab=='chat')chInit();else clearInterval(CHT)}
+$('ad').innerHTML=`${nhHeader()}<div class="tabs"><div class="a9-sb-b"><span class="a9-sb-l">${SB_LGI}</span><span class="a9-sb-n"><b>Site do Vendedor</b><small>Admin geral</small></span></div><i class="tsep" data-g="Gestão" aria-hidden="true"></i>${tabs.map(t=>t[0]=='|'?`<i class="tsep" data-g="${t[1]}" aria-hidden="true"></i>`:`<button data-t="${t[0]}" class="${tab==t[0]?'on':''}" onclick="tab='${t[0]}';pinta()">${ico(t[0])}<span class="tl">${t[1]}</span><span class="ts">${t[2]||t[1]}</span>${t[0]=='chat'&&CHN>0?`<span class="tbn">${CHN}</span>`:''}${t[0]=='av'&&AVN>0?`<span class="tbn">${AVN>99?'99+':AVN}</span>`:''}</button>`).join('')}<i class="tsep" aria-hidden="true"></i><button type="button" class="nh-sair" onclick="sair()">${ico('sair')}<span class="tl">Sair</span><span class="ts">Sair</span></button></div>${h}${tab=='cfg'?cfgSec('Site de vendas','O que o visitante vê antes de contratar',1)+cartShell()+cfgSec('Segurança e ferramentas','',1)+'<div class="card"><h3>🔒 Isolamento das personalizações</h3><p style="color:var(--m);font-size:14px;margin:0 0 12px">Confere, com os vendedores reais, que o visual de um site nunca aparece no site de outro vendedor. O teste simula cada vendedor salvando uma cor e olha todos os sites. Nada fica gravado.</p><button class="btn o" id="iso_b" onclick="isoTestar()">Rodar teste agora</button><div id="iso_r"></div></div><p class="pl-i" style="margin-top:22px">Ferramenta avançada: <a href="#" onclick="tab=\'img\';pinta();return false" style="color:var(--g2)">otimizar imagens do site</a></p><p class="pl-i">Versão do site: 11/11/2026 · planos mensal, 6 meses e de 2 a 24 meses · prazo contado 24 h por dia · expansão por estado</p>':tab=='img'?'<p class="pl-i"><a href="#" onclick="tab=\'cfg\';pinta();return false" style="color:var(--g2)">← voltar às configurações</a></p>':''}`;if(tab=='sis')sisCarrega();if(tab=='div')divCarrega();if(tab=='av')avCarrega();if(tab=='cad')cadCarrega();agMostra();calcMostra();if(tab=='dash'){metaLoad();metaiLoad();saudeLoad()}if(tab=='cfg')cartLoad();try{const o=document.querySelector('#ad .tabs .on');if(o)o.scrollIntoView({block:'nearest',inline:'nearest'})}catch(e){}if(tab=='nov')novLoad();if(tab=='exp')expLoad();if(tab=='parc')parcLoad();if(tab=='sup')supLoad();if(tab=='brasil')brMount();if(tab=='chat')chInit();else clearInterval(CHT)}
 
 
 /* ===== Monitoramento do sistema (desenho + saúde) ===== */
@@ -2157,7 +2157,62 @@ function listasH(){const ini=n=>String(n||'?').trim().split(/\s+/).slice(0,2).ma
   const lu=U.map(v=>`<button type="button" class="a9-lr" onclick="vend('${esc(v.id)}')"><span class="a9-av">${esc(ini(v.nome))}</span><span class="a9-lt"><b>${esc(v.nome)}</b><small>/${esc(v.slug)} · ${fdt(v.criado)}</small></span>${pil(v.suspenso?'suspensa':'ativa')}</button>`).join('')||'<p class="mu2">Nenhum vendedor cadastrado.</p>';
   const le=E.map(x=>{const c=x.c,nm=c.name||c.slug;return `<button type="button" class="a9-lr" onclick="vSlug('${esc(c.slug)}')"><span class="a9-av">${esc(ini(nm))}</span><span class="a9-lt"><b>${esc(nm)}</b><small>${esc(faltaTxt(c.expires_at))}</small></span><span class="a9-lz ${x.d<0?'er':x.d<=3?'wn':''}">${x.d<0?'vencida':Math.ceil(x.d)+(Math.ceil(x.d)===1?' dia':' dias')}</span></button>`}).join('')||'<p class="mu2">Nenhuma assinatura vence nos próximos 10 dias.</p>';
   return `<div class="a9-ls"><div class="a9-lc"><div class="a9-lc-h"><h3>Últimos vendedores</h3><button type="button" class="a9-lc-m" onclick="tab='vend';pinta()">Ver todos</button></div>${lu}</div><div class="a9-lc"><div class="a9-lc-h"><h3>Assinaturas perto de vencer</h3><span>até 10 dias</span></div>${le}</div></div>`}
-function dashHtml(k){return `${dashTop()}${kpiTop(k)}${heroRev(k)}${modulosH()}${listasH()}${kpisV30(k)}${saudeShell()}${metaShell()}${metaiShell()}${lojasV30()}`}
+/* ===== v91: Admin Geral — painel moderno (cabeçalho, hero, gráfico, ranking, rosca, atividades, acesso rápido, resumo) ===== */
+IC.sair='<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>';
+IC.dl='<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>';
+let NHP='30',NHTOP=null,NHTOPT=0,NHC=[],NHM={mx:1,pt:16,pb:4,H:220};
+const NHMES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const nhIni=n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'?';
+function nhData(){const d=new Date();let s=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'}).replace(/\./g,'');s=s.charAt(0).toUpperCase()+s.slice(1);return s+' · '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+if(!window.nhTm)window.nhTm=setInterval(()=>{const e=$('nh_dt');if(e)e.textContent=nhData()},30000);
+function nhAgo(d){const s=(Date.now()-new Date(d))/1000;if(!isFinite(s))return'';if(s<60)return'agora';if(s<3600)return Math.floor(s/60)+' min';if(s<86400)return Math.floor(s/3600)+' h';return Math.floor(s/86400)+' d'}
+function nhHeader(){return `<header class="nh"><span class="nh-lg">${SB_LGI}</span><div class="nh-t"><b>Olá, Administrador!</b><small>Bem-vindo de volta ao painel</small></div><div class="nh-r"><span class="nh-dt" id="nh_dt">${esc(nhData())}</span><button type="button" class="nh-b" id="nh_bell" aria-label="Avisos" onclick="tab='av';pinta()">${ico('av')}${AVN>0?`<i class="nh-nb">${AVN>99?'99+':AVN}</i>`:''}</button><button type="button" class="nh-u" aria-label="Menu do administrador" onclick="nhMenu(event)">AD</button></div></header>`}
+function nhBell(){const b=$('nh_bell');if(!b)return;let n=b.querySelector('.nh-nb');if(AVN>0){if(!n){n=document.createElement('i');n.className='nh-nb';b.appendChild(n)}n.textContent=AVN>99?'99+':AVN}else if(n)n.remove()}
+function nhFecha(){const m=$('nh_pop');if(m)m.remove()}
+function nhMenu(e){if(e)e.stopPropagation();if($('nh_pop')){nhFecha();return}const m=document.createElement('div');m.id='nh_pop';m.className='nh-pop';
+  m.innerHTML=[['Buscar','search','cmdAbre()'],['Ver o site','dash',"go('')"],[TEMA==='dk'?'Tema claro':'Tema escuro','cfg','temaTroca()'],['Sair','sair','sair()']].map(x=>`<button type="button" onclick="nhFecha();${x[2]}">${ico(x[1])}<span>${x[0]}</span></button>`).join('');
+  $('adm').appendChild(m);setTimeout(()=>document.addEventListener('click',nhFecha,{once:true}),0)}
+function nhHero(k){const pe=+k.pendentes||0,ve=+k.vencidas||0,P=[];if(pe)P.push(`<b>${pe}</b> pedido${pe>1?'s':''} aguardando pagamento`);if(ve)P.push(`<b>${ve}</b> assinatura${ve>1?'s':''} vencida${ve>1?'s':''}`);
+  const msg=P.length?'Atenção: '+P.join(' e ')+'.':'Tudo em dia: nenhuma pendência agora.';
+  return `<section class="nh-hero"><div class="nh-ht"><h2>Painel Administrativo</h2><p>Controle total do seu negócio</p><span class="nh-hm ${P.length?'wn':'ok'}"><i></i><span>${msg}</span></span></div><div class="nh-tb"><button type="button" class="nh-tbb" onclick="cmdAbre()">${ico('search')}<span>Buscar</span></button><button type="button" class="nh-tbb" onclick="tab='vend';pinta();vnovoForm()">${ico('plus')}<span>Criar vendedor</span></button><button type="button" class="nh-tbb pri" onclick="nhExporta()">${ico('dl')}<span>Exportar relatório</span></button></div></section>`}
+function nhExporta(){const q=s=>{s=String(s==null?'':s);if(/^[=@]|^[+\-](?!\d)/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'},gm={pago:'Pago',nao:'Não pago',socio:'Sócio'},
+  H=['Vendedor','Endereço do site','E-mail','WhatsApp','Status','Pagamento','Plano','Vence em','Motos','Cadastro'],
+  rows=V.map(v=>{const c=(typeof cli==='function'&&cli(v.slug))||{};return [v.nome,v.slug,v.email,v.whatsapp,v.suspenso?'Suspensa':'Ativa',gm[vGrupo(v)]||'',c.plan_id||'',c.expires_at?String(c.expires_at).slice(0,10):'',v.motos,String(v.criado||'').slice(0,10)]}),
+  csv='﻿'+[H,...rows].map(r=>r.map(q).join(';')).join('\r\n'),a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='vendedores-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},600)}
+function nhSerie(){const S=SER_D||{};
+  if(NHP==='30')return (S.receita||[]).map(x=>({l:lxDia(x.dia),t:lxDia(x.dia),v:+x.valor||0,q:+x.qtd||0}));
+  const n=NHP==='6'?6:12;return (S.meses||[]).slice(-n).map(x=>{const m=+String(x.mes).slice(5,7)-1,a=NHMES[m]||'';return{l:a,t:a+'/'+String(x.mes).slice(2,4),v:+x.valor||0,q:+x.qtd||0}})}
+function nhChart(P){const n=P.length;if(n<2)return '<p class="mu2" style="margin:28px 0">Ainda não há dados suficientes para o gráfico.</p>';
+  const W=640,H=220,pt=16,pb=4,mx=Math.max(1,...P.map(p=>p.v)),X=i=>W*i/(n-1),Y=v=>pt+(H-pt-pb)*(1-v/mx);NHM={mx,pt,pb,H};
+  let d='';P.forEach((p,i)=>{const x=X(i),y=Y(p.v);if(!i)d+='M'+x.toFixed(1)+','+y.toFixed(1);else{const px=X(i-1),py=Y(P[i-1].v),cx=(px+x)/2;d+='C'+cx.toFixed(1)+','+py.toFixed(1)+' '+cx.toFixed(1)+','+y.toFixed(1)+' '+x.toFixed(1)+','+y.toFixed(1)}});
+  const gl=[0,.33,.66,1].map(f=>{const y=(pt+(H-pt-pb)*f).toFixed(1);return `<line x1="0" x2="${W}" y1="${y}" y2="${y}"/>`}).join('');
+  const idx=n>12?[0,1,2,3,4,5].map(i=>Math.round(i*(n-1)/5)):P.map((_,i)=>i),lx=n-1,ly=Y(P[lx].v);
+  return `<div class="nh-cvw"><div class="nh-cv" onpointermove="nhTip(event)" onpointerdown="nhTip(event)" onpointerleave="nhOff()"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Gráfico de vendas"><defs><linearGradient id="nh_g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--nh-ac)" stop-opacity=".42"/><stop offset="1" stop-color="var(--nh-ac)" stop-opacity="0"/></linearGradient></defs><g class="nh-gl">${gl}</g><path d="${d}L${W},${H-pb}L0,${H-pb}Z" fill="url(#nh_g)"/><path d="${d}" fill="none" stroke="var(--nh-ac)" stroke-width="2.6" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg><i class="nh-vl" id="nh_vl"></i><i class="nh-dot" id="nh_dot" style="left:100%;top:${(ly/H*100).toFixed(2)}%"></i><div class="nh-tip" id="nh_tp"></div></div><div class="nh-ax">${idx.map(i=>`<span>${esc(P[i].l)}</span>`).join('')}</div></div>`}
+function nhTip(e){const n=NHC.length;if(n<2)return;const r=e.currentTarget.getBoundingClientRect(),f=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),i=Math.round(f*(n-1)),p=NHC[i],t=$('nh_tp'),l=$('nh_vl'),d=$('nh_dot');if(!t)return;
+  t.innerHTML=`<b>${R(p.v)}</b><span>${esc(p.t)}${p.q?' · '+p.q+' venda'+(p.q>1?'s':''):''}</span>`;const px=i/(n-1)*100,py=(NHM.pt+(NHM.H-NHM.pt-NHM.pb)*(1-p.v/NHM.mx))/NHM.H*100;
+  l.style.left=px+'%';l.style.opacity=1;t.style.opacity=1;t.style.left=Math.min(Math.max(px,16),84)+'%';d.style.left=px+'%';d.style.top=py+'%'}
+function nhOff(){const t=$('nh_tp'),l=$('nh_vl');if(t)t.style.opacity=0;if(l)l.style.opacity=0}
+function nhChartCard(){const P=nhSerie();NHC=P;const tot=sum(P.map(p=>p.v)),q=sum(P.map(p=>p.q)),tt=NHP==='30'?'Vendas nos últimos 30 dias':'Vendas nos últimos '+P.length+' meses';
+  return `<section class="nh-card nh-ch" id="nh_chc"><div class="nh-ch-h"><div><h3>${tt}</h3><small>${R(tot)} · ${q} venda${q===1?'':'s'}</small></div><div class="nh-tabs" role="tablist">${[['30','30 dias'],['6','6M'],['12','12M']].map(t=>`<button type="button" role="tab" aria-selected="${NHP===t[0]}" class="${NHP===t[0]?'on':''}" onclick="nhPer('${t[0]}')">${t[1]}</button>`).join('')}</div></div>${nhChart(P)}</section>`}
+function nhPer(p){NHP=p;const e=$('nh_chc');if(e)e.outerHTML=nhChartCard()}
+function nhTopHtml(){const L=NHTOP;if(!L)return '<p class="mu2">Carregando…</p>';
+  const T=[...L].filter(v=>(+v.clientes||0)>0).sort((a,b)=>(b.clientes-a.clientes)||((b.visitas||0)-(a.visitas||0))).slice(0,5);
+  if(!T.length)return '<p class="mu2">Nenhum cliente cadastrado nos últimos 30 dias.</p>';const mx=Math.max(1,T[0].clientes);
+  return T.map((v,i)=>`<button type="button" class="nh-tp" onclick="vend('${esc(v.id)}')"><span class="nh-rk r${i+1}">${i+1}</span><span class="a9-av">${esc(nhIni(v.nome))}</span><span class="nh-tpn"><b>${esc(v.nome)}</b><i style="--w:${Math.max(6,Math.round(v.clientes*100/mx))}%"></i></span><span class="nh-tpv"><b>${v.clientes}</b><small>cliente${v.clientes===1?'':'s'}</small></span></button>`).join('')}
+async function nhTopCarrega(){if(!(NHTOP&&Date.now()-NHTOPT<60000)){try{const r=await sb.rpc('mestre_cadastro_clientes',{p_dias:30});if(r.error)throw r.error;NHTOP=r.data||[];NHTOPT=Date.now()}catch(e){NHTOP=NHTOP||[]}}const el=$('nh_top');if(el&&tab=='dash')el.innerHTML=nhTopHtml()}
+function nhDonut(){const C=[['Pagos',vgCount('pago'),'#2ee6a6'],['Não pagos',vgCount('nao'),'#ff6b78'],['Sócios',vgCount('socio'),'#8b7bff']],ou=Math.max(0,V.length-sum(C.map(c=>c[1])));if(ou)C.push(['Outros',ou,'#8b97ad']);const tot=sum(C.map(c=>c[1]));
+  if(!tot)return '<p class="mu2">Nenhum vendedor cadastrado ainda.</p>';let off=25;const seg=C.map(c=>{const p=c[1]*100/tot,l=Math.max(p-(p<100?1:0),0),s=`<circle r="15.9155" cx="21" cy="21" fill="none" stroke="${c[2]}" stroke-width="5" stroke-dasharray="${l.toFixed(2)} ${(100-l).toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"/>`;off-=p;return s}).join('');
+  return `<div class="nh-dn"><div class="nh-dnw"><svg viewBox="0 0 42 42" role="img" aria-label="${C.map(c=>c[1]+' '+c[0].toLowerCase()).join(', ')}"><circle r="15.9155" cx="21" cy="21" fill="none" class="nh-dnt" stroke-width="5"/>${seg}</svg><div class="nh-dnc"><b>${tot}</b><small>vendedores</small></div></div><ul class="nh-lg2">${C.map(c=>`<li><i style="background:${c[2]}"></i><span>${c[0]}</span><b>${c[1]}</b><small>${Math.round(c[1]*100/tot)}%</small></li>`).join('')}</ul></div>`}
+function nhAtiv(){if(!AV)return '<p class="mu2">Carregando…</p>';const L=(AV.lista||[]).slice(0,6);if(!L.length)return '<p class="mu2">Nenhuma atividade registrada ainda.</p>';
+  return L.map(x=>{const c=AVCAT[x.tipo]||AVCAT.sistema;return `<button type="button" class="nh-ac${x.lida?'':' nw'}" onclick="tab='av';pinta()"><span class="nh-ai">${c[0]}</span><span class="nh-at"><b>${esc(x.titulo)}</b><small>${esc(x.corpo||'')}</small></span><time>${esc(nhAgo(x.criado))}</time></button>`}).join('')}
+function nhAcesso(){const Q=[['vend','Vendedores'],['cad','Cadastros'],['brasil','Brasil'],['ag_catalogo','Catálogo'],['sis','Monitor'],['cfg','Ajustes']];
+  return `<div class="nh-qa">${Q.map(q=>`<button type="button" onclick="tab='${q[0]}';pinta()"><span>${ico(q[0])}</span><b>${q[1]}</b></button>`).join('')}</div>`}
+function nhResumo(k){const it=[['vend','Vendedores',V.length],['check','Pagos',vgCount('pago')],['cash','Pedidos aguardando',+k.pendentes||0],['av','Assinaturas vencidas',+k.vencidas||0],['nov','Avisos não lidos',Math.max(0,AVN)],['loja','Lojas',LJ().length]];
+  return `<section class="nh-card nh-rsm"><div class="nh-ch-h"><div><h3>Resumo do sistema</h3><small>números de agora</small></div><button type="button" class="nh-lk" onclick="tab='sis';pinta()">Monitoramento</button></div><div class="nh-rs">${it.map(x=>`<div><span>${ico(x[0])}</span><b>${x[2]}</b><small>${x[1]}</small></div>`).join('')}</div></section>`}
+function dashHtml(k){setTimeout(()=>{nhTopCarrega();if(!AV)avCarrega().then(()=>{const e=$('nh_at');if(e&&tab=='dash')e.innerHTML=AV?nhAtiv():'<p class="mu2">Não foi possível carregar as atividades agora.</p>'})},0);
+  return `${nhHero(k)}${kpiTop(k)}<div class="nh-g1">${nhChartCard()}<section class="nh-card"><div class="nh-ch-h"><div><h3>Top vendedores</h3><small>clientes cadastrados · 30 dias</small></div><button type="button" class="nh-lk" onclick="tab='cad';pinta()">Ver todos</button></div><div id="nh_top">${nhTopHtml()}</div></section></div>
+<div class="nh-g2"><section class="nh-card"><div class="nh-ch-h"><div><h3>Distribuição de vendedores</h3><small>por situação de pagamento</small></div></div>${nhDonut()}</section><section class="nh-card"><div class="nh-ch-h"><div><h3>Atividades recentes</h3><small>últimos avisos</small></div><button type="button" class="nh-lk" onclick="tab='av';pinta()">Ver todas</button></div><div id="nh_at">${nhAtiv()}</div></section><section class="nh-card"><div class="nh-ch-h"><div><h3>Acesso rápido</h3><small>vá direto à área</small></div></div>${nhAcesso()}</section></div>${nhResumo(k)}${listasH()}${kpisV30(k)}${saudeShell()}${metaShell()}${metaiShell()}${lojasV30()}`}
 /* ===== v91: Cadastro Clientes — por concessionária, com clientes cadastrados e visitas em cada vendedor ===== */
 let CAD=null,CAD_D=0,CAD_Q='',CAD_AB={},CAD_CL={},CAD_GA={};
 const CAD_TP={rascunho:'Em andamento (não enviou)',chat:'Chat',ficha:'Ficha CDC',contrato:'Pré-contrato CNH',contato:'Contato'};
@@ -2270,7 +2325,7 @@ async function avCarrega(){try{const r=await sb.rpc('mestre_avisos',{p_limit:150
   avPinta();avBadge();if(!AVST)avSt()}
 async function avSt(){try{const[a,b,s]=await Promise.all([sb.rpc('dono_push_status'),sb.rpc('dono_aparelhos'),subAtual()]);AVST=Object.assign({},(a&&a.data)||{});AVST.eu=s?s.endpoint:null;AVAP=(b&&b.data)||[]}catch(e){}avPinta()}
 function avPinta(){if(tab=='av'&&$('avw')&&AV)$('avw').innerHTML=avHtml()}
-function avBadge(){const b=document.querySelector('.tabs button[data-t="av"]');if(!b)return;let n=b.querySelector('.tbn');if(AVN>0){if(!n){n=document.createElement('span');n.className='tbn';b.appendChild(n)}n.textContent=AVN>99?'99+':AVN}else if(n)n.remove()}
+function avBadge(){nhBell();const b=document.querySelector('.tabs button[data-t="av"]');if(!b)return;let n=b.querySelector('.tbn');if(AVN>0){if(!n){n=document.createElement('span');n.className='tbn';b.appendChild(n)}n.textContent=AVN>99?'99+':AVN}else if(n)n.remove()}
 async function avContar(primeiro){try{const r=await sb.rpc('mestre_avisos',{p_limit:1,p_cat:null});if(r.error)return;const n=r.data.nao_lidas||0,x=(r.data.lista||[])[0];
   if(!primeiro&&AVN>=0&&n>AVN&&x)avToast(x);AVN=n;avBadge();if(tab=='av'&&n!==(AV&&AV.nao_lidas))avCarrega()}catch(e){}}
 function avToast(x){const c=AVCAT[x.tipo]||AVCAT.sistema;toast('',`<div class="nt" style="background:var(--s);cursor:pointer" onclick="tab='av';pinta()"><h4>${c[0]} ${esc(x.titulo)}</h4><div style="font-size:14px">${esc(x.corpo||'')}</div></div>`)}
@@ -3249,5 +3304,111 @@ setTimeout(()=>{let pend=null;try{pend=localStorage.getItem('ps_pix')}catch(e){}
 #adm .a9-nv-p{display:flex;align-items:center;gap:8px;font-size:14px;margin:6px 0;cursor:pointer}#adm .a9-nv-p input{width:18px;height:18px}
 #adm .a9-nv-l{list-style:none;margin:0;padding:0}#adm .a9-nv-r .mini{white-space:nowrap}#adm .a9-nv-r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--pb);font-size:13.5px}#adm .a9-nv-r:last-child{border:0}#adm .a9-nv-l small{color:var(--m)}
 @media(max-width:900px){#adm .a9-nv-g{grid-template-columns:1fr}}
+</style>
+<style id="adm-novo">
+/* ===== v91: Admin Geral — painel moderno (cabeçalho, cartões, gráfico, barra inferior) ===== */
+#adm#adm{--nh-ac:#d3112c;--nh-card:#fff;--nh-bar:#fffffff6;--nh-sh:0 24px 50px -36px #1a1a2a88}
+#adm#adm.dk{--nh-ac:#ff3b4e;--nh-card:linear-gradient(180deg,#121a2a,#0d1421);--nh-bar:#0d1421f4;--nh-sh:0 24px 50px -34px #000}
+html body #admtop,html body #adm .adm-top{display:none!important}
+html body #adm#adm .w{padding-top:0!important;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))!important}
+html body #adm#adm #agw iframe{height:calc(100dvh - 210px)}
+/* cabeçalho */
+#adm .nh{display:flex;align-items:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) 0 14px}
+#adm .nh-lg svg{height:46px;width:auto;display:block}
+#adm .nh-t{display:flex;flex-direction:column;min-width:0;gap:2px}#adm .nh-t b{font:800 clamp(18px,1.6vw,24px)/1.15 Sora,Inter,sans-serif;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#adm .nh-t small{color:var(--mu);font-size:13px}
+#adm .nh-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+#adm .nh-dt{font-size:13px;font-weight:600;color:var(--mu);padding:9px 14px;border-radius:99px;background:var(--nh-card);border:1px solid var(--ln2);white-space:nowrap}
+#adm .nh-b,#adm .nh-u{position:relative;width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--ln2);background:var(--nh-card);color:var(--tx);display:grid;place-items:center;cursor:pointer;padding:0;font:800 14px Inter,sans-serif;box-shadow:none}
+#adm .nh-b svg{width:22px;height:22px}#adm .nh-u{background:linear-gradient(135deg,#ff3b4e,#b00d25);color:#fff;border-color:#ff6b7d66}
+#adm .nh-nb{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#ff3b4e;color:#fff;font:800 11px/20px Inter,sans-serif;text-align:center;font-style:normal;box-shadow:0 0 0 3px var(--bg,#fff)}
+#adm.dk .nh-nb{box-shadow:0 0 0 3px #080b12}
+#adm .nh-pop{position:fixed;top:calc(70px + env(safe-area-inset-top,0px));right:clamp(14px,2vw,40px);z-index:90;min-width:210px;padding:8px;border-radius:18px;background:var(--nh-card);border:1px solid var(--ln2);box-shadow:0 24px 60px -16px #000a;display:grid;gap:2px}
+#adm .nh-pop button{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-radius:12px;background:transparent;color:var(--tx);font:600 15px Inter,sans-serif;cursor:pointer;text-align:left;box-shadow:none}
+#adm .nh-pop button:hover{background:#ff3b4e1a}#adm .nh-pop svg{width:20px;height:20px;color:var(--mu)}
+/* hero */
+#adm .nh-hero{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:18px 24px;flex-wrap:wrap;padding:clamp(18px,2vw,28px);margin:0 0 14px;border-radius:22px;background:var(--nh-card);border:1px solid var(--ln2);box-shadow:var(--nh-sh)}
+#adm .nh-hero::before{content:"";position:absolute;right:-8%;top:-60%;width:46%;height:220%;background:radial-gradient(closest-side,#ff3b4e2e,transparent);pointer-events:none}
+#adm .nh-ht{position:relative;min-width:0}#adm .nh-ht h2{margin:0;font:800 clamp(24px,2.4vw,36px)/1.1 Sora,Inter,sans-serif;color:var(--tx)}#adm .nh-ht h2::after{display:none}
+#adm .nh-ht p{margin:6px 0 12px;color:var(--mu);font-size:clamp(14px,1vw,16px)}
+#adm .nh-hm{display:inline-flex;align-items:center;gap:9px;padding:8px 14px;border-radius:99px;font-size:13.5px;background:#ffb84d1f;border:1px solid #ffb84d55;color:var(--tx)}#adm .nh-hm.ok{background:#2ee6a61a;border-color:#2ee6a655}
+#adm .nh-hm i{width:9px;height:9px;border-radius:50%;background:#ffb84d;flex:none}#adm .nh-hm.ok i{background:#2ee6a6}
+#adm .nh-tb{position:relative;display:flex;gap:10px;flex-wrap:wrap}
+#adm .nh-tbb{display:inline-flex;align-items:center;gap:9px;min-height:46px;padding:0 18px;border-radius:14px;border:1px solid var(--ln2);background:transparent;color:var(--tx);font:700 14.5px Inter,sans-serif;cursor:pointer;box-shadow:none;transition:background .15s,transform .15s}
+#adm .nh-tbb svg{width:19px;height:19px}#adm .nh-tbb:hover{background:#ff3b4e14;transform:translateY(-1px)}
+#adm .nh-tbb.pri{background:linear-gradient(135deg,#ff3b4e,#b00d25);border-color:#ff6b7d66;color:#fff;box-shadow:0 12px 26px -12px #ff3b4eaa}#adm .nh-tbb.pri:hover{background:linear-gradient(135deg,#ff4d5e,#c4112a)}
+/* cartões */
+#adm .nh-g1,#adm .nh-g2{display:grid;gap:14px;margin:0 0 14px}
+#adm .nh-g1{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr)}#adm .nh-g2{grid-template-columns:repeat(3,minmax(0,1fr))}
+#adm .nh-card{min-width:0;padding:clamp(16px,1.5vw,24px);border-radius:20px;background:var(--nh-card);border:1px solid var(--ln2);box-shadow:var(--nh-sh);color:var(--tx)}
+#adm .nh-ch-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:0 0 12px}
+#adm .nh-ch-h h3{margin:0;font:800 clamp(16px,1.2vw,19px)/1.2 Sora,Inter,sans-serif;color:var(--tx)}#adm .nh-ch-h small{display:block;margin-top:3px;color:var(--mu);font-size:13px}
+#adm .nh-lk{border:0;background:transparent;color:var(--nh-ac);font:700 13.5px Inter,sans-serif;cursor:pointer;padding:6px 2px;white-space:nowrap;box-shadow:none}#adm .nh-lk:hover{text-decoration:underline}
+#adm .nh-tabs{display:flex;gap:3px;padding:3px;border-radius:99px;background:#80808022;flex:none}
+#adm .nh-tabs button{border:0;background:transparent;color:var(--mu);padding:7px 14px;border-radius:99px;font:700 13px Inter,sans-serif;cursor:pointer;box-shadow:none;min-height:0}
+#adm .nh-tabs button.on{background:var(--nh-ac);color:#fff}
+/* gráfico */
+#adm .nh-cvw{padding:0 8px}#adm .nh-cv{position:relative;height:clamp(180px,20vw,250px);touch-action:pan-y;cursor:crosshair}
+#adm .nh-cv svg{width:100%;height:100%;display:block;overflow:visible}#adm .nh-gl line{stroke:var(--ln2);stroke-dasharray:3 5;vector-effect:non-scaling-stroke}
+#adm .nh-vl{position:absolute;top:0;bottom:0;width:1px;background:var(--ln2);opacity:0;pointer-events:none;transition:opacity .15s}
+#adm .nh-dot{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--nh-ac);transform:translate(-50%,-50%);box-shadow:0 0 0 4px #ff3b4e33;pointer-events:none}
+#adm .nh-tip{position:absolute;top:6px;transform:translateX(-50%);opacity:0;pointer-events:none;transition:opacity .15s;padding:8px 12px;border-radius:12px;background:#0b1020ee;color:#fff;font-size:12.5px;display:flex;flex-direction:column;gap:2px;white-space:nowrap;border:1px solid #ffffff22}#adm .nh-tip b{font-size:15px}
+#adm .nh-ax{display:flex;justify-content:space-between;margin-top:8px;color:var(--mu);font-size:11.5px}
+/* ranking */
+#adm .nh-tp{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:10px 4px;border:0;border-bottom:1px solid var(--ln);background:transparent;color:var(--tx);cursor:pointer;text-align:left;box-shadow:none;border-radius:0}
+#adm .nh-tp:last-child{border-bottom:0}#adm .nh-tp:hover{background:#ff3b4e0f}
+#adm .nh-rk{width:26px;min-width:26px;height:26px;flex:none;border-radius:50%;display:grid;place-items:center;font:800 12.5px Inter,sans-serif;background:#80808026;color:var(--mu)}
+#adm .nh-rk.r1{background:#ffc629;color:#3a2a00}#adm .nh-rk.r2{background:#cfd5e0;color:#26303f}#adm .nh-rk.r3{background:#e0a070;color:#3a1e08}
+#adm .nh-tpn{display:flex;flex-direction:column;gap:6px;min-width:0}#adm .nh-tpn b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#adm .nh-tpn i{display:block;height:4px;border-radius:99px;background:var(--nh-ac);width:var(--w);min-width:6px;opacity:.9}
+#adm .nh-tpv{display:flex;flex-direction:column;align-items:flex-end}#adm .nh-tpv b{font:800 18px Sora,Inter,sans-serif;font-variant-numeric:tabular-nums}#adm .nh-tpv small{font-size:11.5px;color:var(--mu)}
+/* rosca */
+#adm .nh-dn{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;min-height:190px}
+#adm .nh-dnw{position:relative;width:clamp(130px,11vw,158px);aspect-ratio:1;flex:none}#adm .nh-dnw svg{width:100%;height:100%;display:block}#adm .nh-dnt{stroke:var(--ln2)}
+#adm .nh-dnc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}#adm .nh-dnc b{font:800 clamp(24px,2vw,32px)/1 Sora,Inter,sans-serif}#adm .nh-dnc small{color:var(--mu);font-size:12px;margin-top:3px}
+#adm .nh-lg2{list-style:none;margin:0;padding:0;display:grid;gap:12px;flex:1;min-width:150px}
+#adm .nh-lg2 li{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;font-size:14px}#adm .nh-lg2 i{width:11px;height:11px;border-radius:50%}#adm .nh-lg2 b{font-variant-numeric:tabular-nums}#adm .nh-lg2 small{color:var(--mu);min-width:34px;text-align:right}
+/* atividades */
+#adm .nh-ac{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:10px 6px;border:0;border-bottom:1px solid var(--ln);background:transparent;color:var(--tx);cursor:pointer;text-align:left;box-shadow:none;border-radius:0}
+#adm .nh-ac:last-child{border-bottom:0}#adm .nh-ac:hover{background:#ff3b4e0f}#adm .nh-ac.nw{box-shadow:inset 3px 0 0 var(--nh-ac)}
+#adm .nh-ai{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:#ff3b4e1f;font-size:17px}
+#adm .nh-at{display:flex;flex-direction:column;min-width:0}#adm .nh-at b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#adm .nh-at small{color:var(--mu);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#adm .nh-ac time{font-size:12px;color:var(--mu);white-space:nowrap}
+/* acesso rápido */
+#adm .nh-qa{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#adm .nh-qa button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:16px 6px;min-height:92px;border-radius:16px;border:1px solid var(--ln2);background:transparent;color:var(--tx);cursor:pointer;box-shadow:none;transition:background .15s,transform .15s}
+#adm .nh-qa button:hover{background:#ff3b4e14;transform:translateY(-2px)}#adm .nh-qa span{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#ff3b4e1f;color:var(--nh-ac)}#adm .nh-qa svg{width:22px;height:22px}#adm .nh-qa b{font:700 13px Inter,sans-serif}
+/* resumo */
+#adm .nh-rsm{margin:0 0 14px}#adm .nh-rs{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+#adm .nh-rs div{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center;padding:12px 14px;border-radius:16px;border:1px solid var(--ln2)}
+#adm .nh-rs span{grid-row:1 / span 2;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#ff3b4e1f;color:var(--nh-ac)}#adm .nh-rs svg{width:20px;height:20px}
+#adm .nh-rs b{font:800 22px/1.1 Sora,Inter,sans-serif;font-variant-numeric:tabular-nums}#adm .nh-rs small{color:var(--mu);font-size:12.5px}
+/* barra de abas inferior (todas as larguras) */
+@media(min-width:1000px){
+ html body #adm#adm .w,html body #adm#adm.dk .w{display:block;padding-left:clamp(16px,2vw,40px)!important;padding-right:clamp(16px,2vw,40px)!important}
+ html body #adm#adm #ad>.tabs,html body #adm#adm.dk #ad>.tabs{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:16px!important;transform:translateX(-50%);width:max-content;max-width:min(1240px,calc(100vw - 32px));height:auto!important;max-height:none!important;margin:0!important;padding:8px;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:4px;overflow-x:auto;overflow-y:hidden;border:1px solid var(--ln2);border-radius:28px;background:var(--nh-bar);box-shadow:0 22px 56px -16px #000a;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);z-index:60}
+ html body #adm#adm #ad>.tabs button,html body #adm#adm.dk #ad>.tabs button{position:relative;flex:none;width:auto;min-width:76px;flex-direction:column;justify-content:center;gap:5px;padding:10px 12px 9px;border-radius:19px;font:600 12px/1.15 Inter,sans-serif;text-align:center;box-shadow:none!important;background:transparent;border:1px solid transparent;color:var(--mu)}
+ html body #adm#adm #ad>.tabs button:hover,html body #adm#adm.dk #ad>.tabs button:hover{background:#ff3b4e14;color:var(--tx)}
+ html body #adm#adm #ad>.tabs button.on,html body #adm#adm.dk #ad>.tabs button.on{background:linear-gradient(135deg,#ff3b4e,#b00d25);color:#fff;border-color:#ff6b7d66;box-shadow:0 10px 22px -10px #ff3b4ecc!important}
+ html body #adm#adm #ad>.tabs button.on .a9-ti,html body #adm#adm.dk #ad>.tabs button.on .a9-ti{color:#fff}
+ html body #adm#adm #ad>.tabs button .a9-ti{width:22px;height:22px}
+ html body #adm#adm #ad>.tabs .tl{display:none}html body #adm#adm #ad>.tabs .ts{display:inline}
+ html body #adm#adm #ad>.tabs .a9-sb-b{display:none!important}
+ html body #adm#adm #ad>.tabs .tsep,html body #adm#adm.dk #ad>.tabs .tsep{flex:none;align-self:stretch;width:1px;height:auto;margin:8px 4px;padding:0;border:0;background:var(--ln2);font-size:0}
+ html body #adm#adm #ad>.tabs .tsep::before,html body #adm#adm.dk #ad>.tabs .tsep::before{content:none}
+ html body #adm#adm #ad>.tabs .tbn{position:absolute;top:3px;right:8px;margin:0}
+ html body #adm#adm #ad>.tabs+*{margin-top:0}
+}
+html body #adm#adm:not(.dk) :is(.nh,.nh-hero,.nh-qa,.nh-rs,.nh-pop,.tabs,.a9-k1-i) .a9-ti{display:block}
+html body #adm#adm:not(.dk) #ad>.tabs button::before{content:none!important;display:none!important}
+html body #adm#adm #ad>.tabs .nh-sair{color:#ff6b78}
+html body #adm#adm #ad>.tabs>.tsep:first-child,html body #adm#adm #ad>.tabs>.a9-sb-b+.tsep{display:none!important}
+html body #adm#adm #ad>.tabs button .a9-ti{width:22px;height:22px;flex:none}
+@media(max-width:999px){html body #adm#adm #ad>.tabs .nh-sair{min-width:64px}}
+/* responsivo */
+@media(max-width:1180px){#adm .nh-g2{grid-template-columns:repeat(2,minmax(0,1fr))}#adm .nh-g2>:last-child{grid-column:1 / -1}}
+@media(max-width:900px){#adm .nh-g1{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){#adm .nh-ch-h{flex-wrap:wrap}#adm .nh-tbb{padding:0 12px;white-space:nowrap}#adm .nh-g2{grid-template-columns:minmax(0,1fr)}#adm .nh-dt{display:none}#adm .nh-tb{width:100%;display:grid;grid-template-columns:1fr 1fr}#adm .nh-tbb.pri{grid-column:1 / -1}#adm .nh-tbb{justify-content:center}#adm .nh-qa{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:400px){#adm .nh-t small{display:none}#adm .nh-lg svg{height:36px}}
+@media(prefers-reduced-motion:reduce){#adm .nh-tbb,#adm .nh-qa button,#adm .nh-tip,#adm .nh-vl{transition:none}}
 </style>
 </body></html>
