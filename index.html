@@ -1724,7 +1724,7 @@ async function admGate(){if(_admG)return;_admG=1;try{const pc=admCod();const cod
   history.replaceState(null,'','/'+location.search+(ok?'#admin':''))}finally{_admG=0}route()}
 function admTranca(){ADM_OK=false;ADM_AP=false;ADM_C=null;admSs(null);clearInterval(ap);try{sb.auth.signOut()}catch(e){}location.replace(appModo()?'/?app=admin#admin':'/')}
 async function admVigia(){if(Date.now()-_vg<45000)return;_vg=Date.now();if(ADM_AP){if((await apChk())===false)admTranca();return}if(!(await admPode(ADM_C||admSg())))admTranca()}
-function route(){if(admCod()||(location.hash=='#admin'&&!ADM_OK)){admGate();return}const a=location.hash=='#admin'&&ADM_OK;if(a){admTopPoe();admApp()}document.body.classList.toggle('adm-on',a);applyTema();$('site').style.display=a?'none':'';$('adm').style.display=a?'block':'none';document.body.style.overflow='';if(a)admin();else clearInterval(ap)}
+function route(){if(admCod()||(location.hash=='#admin'&&!ADM_OK)){admGate();return}const a=location.hash=='#admin'&&ADM_OK;if(a){admTopPoe();admApp()}document.body.classList.toggle('adm-on',a);try{admAjustaTela()}catch(e){}applyTema();$('site').style.display=a?'none':'';$('adm').style.display=a?'block':'none';document.body.style.overflow='';if(a)admin();else clearInterval(ap)}
 async function admin(){const{data}=await sb.auth.getSession();if(!data.session)return login();await carregar();apAuto();avUrl();avContar(1);clearInterval(ap);ap=setInterval(()=>{carregar(1);admVigia();avContar()},20000)}
 function login(m){$('ad').innerHTML=`<div class="bx" style="margin-top:60px"><h3>Área do dono</h3><p style="color:var(--m);font-size:14px">Acesso restrito.</p><label>E-mail</label><input id="a_e" type="email"><label>Senha</label><input id="a_p" type="password" onkeydown="if(event.key=='Enter')entrar()"><div class="msg ${m?'er':''}">${esc(m||'')}</div><button class="btn" style="width:100%;margin-top:16px" onclick="entrar()">Entrar</button></div>`}
 sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&location.hash==='#admin'&&$('a_e')==null){clearInterval(ap);login('Sua sessão expirou. Entre de novo.')}});
@@ -1743,7 +1743,7 @@ seen=data.kpis.vendas_site;A=data;if(!q||(tab=='dash'&&!METAED))pinta()}
 function cli(slug){return(A.clientes||[]).find(c=>c.slug==slug)||{}}
 const cNome=k=>{const v=V.find(x=>'c:'+x.concessionaria_id===k);return v&&v.concessionaria||k.slice(2)},cUf=k=>{const v=V.find(x=>'c:'+x.concessionaria_id===k&&x.uf);return v?v.uf:''};
 function vrows(){const s=fq.toLowerCase().trim();const L=V.filter(v=>!s||[v.nome,v.slug,v.email,v.whatsapp].join(' ').toLowerCase().includes(s)); return L.map(v=>{const c=cli(v.slug);return `<tr class="rw" onclick="vend('${esc(v.id)}')"><td data-l="Vendedor"><b class="lnk">${esc(v.nome)}</b><br><small>/${esc(v.slug)}</small></td><td data-l="Status">${pil(v.suspenso?'suspensa':'ativa')}</td><td data-l="Plano">${planoTag(v.id)}${planoTag(v.id)?'<br>':''}${c.plan_id?'<small>'+esc(c.plan_id)+' '+esc(perLbl(c.billing_period))+'</small>':'<small>cadastro manual</small>'}</td><td data-l="Vence">${c.expires_at?fdt(c.expires_at)+'<br><small>'+faltaTxt(c.expires_at)+'</small>':'-'}</td><td data-l="Motos">${v.motos}</td><td data-l="Cadastro">${fdt(v.criado)}</td></tr>`}).join('')||'<tr><td colspan="6" style="text-align:center;color:var(--m);padding:28px">Nenhum vendedor encontrado.</td></tr>'}
-function pinta(){const k=A.kpis;let h='';
+function pinta(){try{if(window.__admZ===undefined||!document.documentElement.classList.contains('az'))admAjustaTela()}catch(e){}const k=A.kpis;let h='';
 const tabs=[['dash','Dashboard','Início'],['av','Avisos','Avisos'],['vend','Vendedores','Vendedores'],['brasil','Brasil','Brasil'],['sup','Supervisores','Supervis.'],['cad','Cadastro Clientes','Cadastros'],['div','Divulgadores','Divulg.'],['|','Vitrine'],['ag_catalogo','Catálogo','Catálogo'],['ag_ofertas','Ofertas','Ofertas'],['|','Sistema'],['sis','Monitoramento','Monitor'],['cfg','Configurações','Ajustes'],['exp','Expandir','Expandir']];if(!tabs.some(t=>t[0]==tab)&&tab!='img')tab='dash';
 if(tab=='dash')h=dashHtml(k);
 if(tab=='vend')h=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn" onclick="vnovoForm()">+ Criar vendedor</button><input id="vq" placeholder="Buscar por nome, endereço, e-mail ou WhatsApp" value="${esc(fq)}" oninput="fq=this.value;$('vt').innerHTML=vrows()" style="max-width:420px"><span style="color:var(--m);font-size:clamp(13px,1vw,17px)">${V.length} vendedor(es) · toque na loja para abrir a lista e no nome para ver dados, plano, senha e links</span><span style="display:flex;gap:6px;margin-left:auto"><button class="mini" onclick="vTodas(1)">Abrir todas</button><button class="mini" onclick="vTodas(0)">Fechar todas</button></span></div><div class="vch" id="vch">${vchHtml()}</div><div class="tb"><table><thead><tr><th>Vendedor</th><th>Pagamento</th><th>Status</th><th>Plano</th><th>Vence</th><th>Motos</th><th>Cadastro</th></tr></thead><tbody id="vt">${vrows()}</tbody></table></div>`;
@@ -2213,6 +2213,17 @@ function nhResumo(k){const it=[['vend','Vendedores',V.length],['check','Pagos',v
 function dashHtml(k){setTimeout(()=>{nhTopCarrega();if(!AV)avCarrega().then(()=>{const e=$('nh_at');if(e&&tab=='dash')e.innerHTML=AV?nhAtiv():'<p class="mu2">Não foi possível carregar as atividades agora.</p>'})},0);
   return `${nhHero(k)}${kpiTop(k)}<div class="nh-g1">${nhChartCard()}<section class="nh-card"><div class="nh-ch-h"><div><h3>Top vendedores</h3><small>clientes cadastrados · 30 dias</small></div><button type="button" class="nh-lk" onclick="tab='cad';pinta()">Ver todos</button></div><div id="nh_top">${nhTopHtml()}</div></section></div>
 <div class="nh-g2"><section class="nh-card"><div class="nh-ch-h"><div><h3>Distribuição de vendedores</h3><small>por situação de pagamento</small></div></div>${nhDonut()}</section><section class="nh-card"><div class="nh-ch-h"><div><h3>Atividades recentes</h3><small>últimos avisos</small></div><button type="button" class="nh-lk" onclick="tab='av';pinta()">Ver todas</button></div><div id="nh_at">${nhAtiv()}</div></section><section class="nh-card"><div class="nh-ch-h"><div><h3>Acesso rápido</h3><small>vá direto à área</small></div></div>${nhAcesso()}</section></div>${nhResumo(k)}${listasH()}${kpisV30(k)}${saudeShell()}${metaShell()}${metaiShell()}${lojasV30()}`}
+
+/* ===== v92: Admin Geral no celular — visão de celular mesmo em "Site para computador", sem zoom de afastar ===== */
+const ADMMQ=new WeakMap();
+function admMedia(z){try{for(const sh of document.styleSheets){let rs;try{rs=sh.cssRules}catch(e){continue}
+  const walk=L=>{for(const r of L){if(r.type!==CSSRule.MEDIA_RULE)continue;let o=ADMMQ.get(r);if(o===undefined){o=r.media.mediaText;ADMMQ.set(r,o)}
+    const t=z===1?o:o.replace(/(\d*\.?\d+)px/g,(m,n)=>(Math.round(n*z*100)/100)+'px');if(r.media.mediaText!==t)r.media.mediaText=t;if(r.cssRules)walk(r.cssRules)}};walk(rs)}}catch(e){}}
+function admAjustaTela(){try{const ln=document.documentElement,on=!!(document.body&&document.body.classList.contains('adm-on')),sw=Math.min(screen.width||0,screen.height||0),iw=ln.clientWidth||innerWidth;
+  let z=1;if(on&&(navigator.maxTouchPoints||0)>0&&sw>0&&sw<700&&iw>sw*1.15)z=Math.min(3,iw/sw)*0.95;
+  ln.style.setProperty('--az',z.toFixed(3));ln.classList.toggle('az',z!==1);if(window.__admZ!==z){window.__admZ=z;admMedia(z)}}catch(e){}}
+addEventListener('resize',()=>{clearTimeout(window.__azT);window.__azT=setTimeout(admAjustaTela,250)});
+addEventListener('load',()=>admAjustaTela());
 /* ===== v91: Cadastro Clientes — por concessionária, com clientes cadastrados e visitas em cada vendedor ===== */
 let CAD=null,CAD_D=0,CAD_Q='',CAD_AB={},CAD_CL={},CAD_GA={};
 const CAD_TP={rascunho:'Em andamento (não enviou)',chat:'Chat',ficha:'Ficha CDC',contrato:'Pré-contrato CNH',contato:'Contato'};
@@ -2236,7 +2247,7 @@ function cadCorpo(){const q=normA(CAD_Q),L=(CAD||[]).filter(v=>{if(!q)return tru
   return `<div class="a9-k1-g">${T.map((c,i)=>`<div class="a9-k1" style="--c:${c[2]};--i:${i}"><div class="a9-k1-h"><span class="a9-k1-i">${ico(c[3])}</span><span class="a9-k1-l">${c[0]}</span></div><b class="a9-k1-n">${c[1]}</b><div class="a9-k1-f"><small style="max-width:none">${c[4]}</small></div></div>`).join('')}</div>`
    +(G.map(g=>{const mx=Math.max(1,...g.L.map(v=>v.clientes)),mv=Math.max(1,...g.L.map(v=>v.visitas));const og=!!CAD_GA[g.k]||!!q;return `<section class="a9-cg${og?' on':''}"><button type="button" class="a9-cg-h" onclick="cadGav('${esc(g.k)}')" aria-expanded="${og}"><div class="a9-cg-n"><span class="a9-cg-i">${ico('loja')}</span><div><h3>${esc(g.n)}</h3><small>${g.L.length} vendedor${g.L.length===1?'':'es'}</small></div></div><div class="a9-cg-m"><div><b>${g.cli}</b><span>clientes</span></div><div><b>${g.vis}</b><span>visitas</span></div><span class="a9-cv-c" aria-hidden="true">▾</span></div></button>${og?`<div class="a9-cg-l">${g.L.map(v=>cadLinha(v,mx,mv)).join('')}</div>`:''}</section>`}).join('')||'<div class="card"><p class="mu2">Nenhum vendedor encontrado.</p></div>')}
 function cadLinha(v,mx,mv){const on=!!CAD_AB[v.id];
-  return `<div class="a9-cv${on?' on':''}"><button type="button" class="a9-cv-r" onclick="cadAbre('${esc(v.id)}')" aria-expanded="${on}"><span class="a9-av">${esc(cadIni(v.nome))}</span><span class="a9-lt"><b>${esc(v.nome)}${v.suspenso?'<em class="a9-sus">suspenso</em>':''}</b><small>/${esc(v.slug)}</small></span><span class="a9-cv-n"><b>${v.clientes}</b><small>${v.clientes===1?'cliente cadastrado':'clientes cadastrados'}</small><i style="--w:${Math.round(v.clientes*100/mx)}%"></i></span><span class="a9-cv-n v"><b>${v.visitas}</b><small>visitas${v.visitas_hoje?' · '+v.visitas_hoje+' hoje':''}</small><i style="--w:${Math.round(v.visitas*100/mv)}%"></i></span><span class="a9-cv-c" aria-hidden="true">▾</span></button>${on?`<div class="a9-cv-b">${cadVend(v)}</div>`:''}</div>`}
+  return `<div class="a9-cv${on?' on':''}"><button type="button" class="a9-cv-r" onclick="cadAbre('${esc(v.id)}')" aria-expanded="${on}"><span class="a9-av">${esc(cadIni(v.nome))}</span><span class="a9-lt"><b>${esc(v.nome)}${v.suspenso?'<em class="a9-sus">suspenso</em>':''}</b><small>/${esc(v.slug)}</small></span><span class="a9-cv-n"><b>${v.clientes}</b><small>${v.clientes===1?'cliente':'clientes'}<span class="cv-x"> ${v.clientes===1?'cadastrado':'cadastrados'}</span></small><i style="--w:${Math.round(v.clientes*100/mx)}%"></i></span><span class="a9-cv-n v"><b>${v.visitas}</b><small>visitas<span class="cv-x">${v.visitas_hoje?' · '+v.visitas_hoje+' hoje':''}</span></small><i style="--w:${Math.round(v.visitas*100/mv)}%"></i></span><span class="a9-cv-c" aria-hidden="true">▾</span></button>${on?`<div class="a9-cv-b">${cadVend(v)}</div>`:''}</div>`}
 function cadVend(v){const L=CAD_CL[v.id],t=[[v.chat,'chat'],[v.fichas,'ficha(s) CDC'],[v.contratos,'pré-contrato(s) CNH'],[v.contatos,'contato(s)']].filter(x=>x[0]>0).map(x=>`<span>${x[0]} ${x[1]}</span>`).join('');
   return `<div class="a9-cv-t">${t||'<span>Nenhum cliente cadastrado neste período</span>'}${v.registros>v.clientes?`<span>${v.registros-v.clientes} repetido(s) juntado(s)</span>`:''}${v.visitantes?`<span>${v.visitantes} visitante(s) diferentes</span>`:''}${v.ultima_visita?`<span>última visita ${cadDt(v.ultima_visita)}</span>`:''}</div>${L===undefined?'<p class="pl-i">Carregando clientes…</p>':L===null?'<p class="mu2">Não consegui carregar os clientes deste vendedor.</p>':L.length?L.map(cadCli).join(''):''}`}
 function cadCli(x){const d=x.dados||{},w=x.telefone?'https://wa.me/'+telZap(x.telefone):'';
@@ -2290,7 +2301,7 @@ async function apAuto(forca){if(!(typeof A!=='undefined'&&A&&A.kpis))return fals
   if(!ADM_C){if(forca)toast('Abra o Admin pelo link do Telegram (/admin) para ativar este aparelho.');return false}
   try{const r=await sb.rpc('dono_aparelho_criar',{p_codigo:ADM_C,p_nome:apNome()});if(r.error)throw r.error;apSet(r.data);ADM_AP=true;if(forca)toast('Este aparelho está liberado: o app abre direto, sem link.');return true}
   catch(e){if(forca)toast('Não consegui liberar este aparelho: '+((e&&e.message)||e));return false}}
-function parear(m){try{applyTema()}catch(e){}$('site').style.display='none';$('adm').style.display='block';document.body.classList.add('adm-on');admApp();
+function parear(m){try{applyTema()}catch(e){}$('site').style.display='none';$('adm').style.display='block';document.body.classList.add('adm-on');try{admAjustaTela()}catch(e){}admApp();
   $('ad').innerHTML=`<div class="bx" style="margin-top:60px"><h3>Ativar o app do Admin Geral</h3><p style="color:var(--m);font-size:14px;line-height:1.5">Só na primeira vez neste aparelho. No Telegram, mande <b>/admin</b> para o bot e cole aqui o link que chegar. Depois você entra com seu e-mail e senha, e o app passa a abrir direto, sem link.</p><label for="pr_l">Link do Admin Geral</label><input id="pr_l" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://www.sitevendedor.com/…" onkeydown="if(event.key=='Enter')parearOk()"><div class="msg ${m?'er':''}" role="alert">${esc(m||'')}</div><button class="btn" style="width:100%;margin-top:16px" onclick="parearOk()">Continuar</button></div>`}
 async function parearOk(){const v=String(($('pr_l')||{}).value||'').trim().replace(/[#?].*$/,'').replace(/\/+$/,'');const c=v.split('/').pop();
   if(!/^[A-Za-z][A-Za-z0-9_@-]{43,63}$/.test(c)||!(await admPode(c)))return parear('Link inválido ou vencido. Peça um novo no Telegram com /admin.');
@@ -3410,5 +3421,29 @@ html body #adm#adm #ad>.tabs button .a9-ti{width:22px;height:22px;flex:none}
 @media(max-width:700px){#adm .nh-ch-h{flex-wrap:wrap}#adm .nh-tbb{padding:0 12px;white-space:nowrap}#adm .nh-g2{grid-template-columns:minmax(0,1fr)}#adm .nh-dt{display:none}#adm .nh-tb{width:100%;display:grid;grid-template-columns:1fr 1fr}#adm .nh-tbb.pri{grid-column:1 / -1}#adm .nh-tbb{justify-content:center}#adm .nh-qa{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:400px){#adm .nh-t small{display:none}#adm .nh-lg svg{height:36px}}
 @media(prefers-reduced-motion:reduce){#adm .nh-tbb,#adm .nh-qa button,#adm .nh-tip,#adm .nh-vl{transition:none}}
+</style>
+<style id="adm-celular">
+/* ===== v92: Admin Geral no celular ===== */
+html:has(body.adm-on #adm.dk){background:#080b12}
+html:has(body.adm-on),html:has(body.adm-on) body.adm-on{touch-action:pan-x pan-y;overflow-x:hidden}
+html.az #adm{zoom:var(--az,1)}
+html.az,html.az body.adm-on{overflow-x:hidden}
+html body #adm#adm,html body #adm#adm .w{max-width:100%;overflow-x:clip}
+/* cabeçalho da loja (Cadastros): clientes e visitas ao lado do nome */
+@media(max-width:760px){
+ #adm .a9-cg-h{flex-wrap:nowrap;gap:10px;padding:14px 12px}
+ #adm .a9-cg-n{min-width:0;flex:1 1 auto;gap:10px}#adm .a9-cg-n>div{min-width:0}
+ #adm .a9-cg-n h3{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#adm .a9-cg-n small{font-size:12px}
+ #adm .a9-cg-i{width:38px;height:38px;border-radius:12px}#adm .a9-cg-i svg{width:20px;height:20px}
+ #adm .a9-cg-m{flex:none;gap:12px}#adm .a9-cg-m b{font-size:19px}#adm .a9-cg-m span{font-size:11px}
+ /* linha do vendedor: nome, clientes e visitas na mesma linha */
+ #adm .a9-cv-r{grid-template-columns:auto minmax(0,1fr) auto auto 16px;row-gap:0;column-gap:10px;align-items:center;padding:12px}
+ #adm .a9-cv-n{grid-column:auto;flex-direction:column;align-items:flex-end;flex-wrap:nowrap;gap:0;min-width:0}
+ #adm .a9-cv-n b{font-size:17px;line-height:1.1}#adm .a9-cv-n small{font-size:11px;line-height:1.15;text-align:right;white-space:nowrap}#adm .a9-cv-n .cv-x{display:none}
+ #adm .a9-cv-c{grid-column:auto;grid-row:auto}
+ #adm .a9-lt{min-width:0}#adm .a9-lt b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+/* Vendedores: contagens da loja quebram de linha em vez de vazar da tela */
+@media(max-width:1000px){#adm tr.vg-h td{white-space:normal;overflow-wrap:anywhere}#adm tr.vg-h small{display:block;margin-top:3px;line-height:1.35}}
 </style>
 </body></html>
