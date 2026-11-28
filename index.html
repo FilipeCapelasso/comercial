@@ -2199,7 +2199,13 @@ function nhPer(p){NHP=p;const e=$('nh_chc');if(e)e.outerHTML=nhChartCard()}
 function nhTopHtml(){const L=NHTOP;if(!L)return '<p class="mu2">Carregando…</p>';
   const T=[...L].filter(v=>(+v.clientes||0)>0).sort((a,b)=>(b.clientes-a.clientes)||((b.visitas||0)-(a.visitas||0))).slice(0,5);
   if(!T.length)return '<p class="mu2">Nenhum cliente cadastrado nos últimos 30 dias.</p>';const mx=Math.max(1,T[0].clientes);
-  return T.map((v,i)=>`<button type="button" class="nh-tp" onclick="vend('${esc(v.id)}')"><span class="nh-rk r${i+1}">${i+1}</span><span class="a9-av">${esc(nhIni(v.nome))}</span><span class="nh-tpn"><b>${esc(v.nome)}</b><i style="--w:${Math.max(6,Math.round(v.clientes*100/mx))}%"></i></span><span class="nh-tpv"><b>${v.clientes}</b><small>cliente${v.clientes===1?'':'s'}</small></span></button>`).join('')}
+  return T.map((v,i)=>`<button type="button" class="nh-tp" onclick="nhRel('${esc(v.id)}')"><span class="nh-rk r${i+1}">${i+1}</span><span class="a9-av">${esc(nhIni(v.nome))}</span><span class="nh-tpn"><b>${esc(v.nome)}</b><i style="--w:${Math.max(6,Math.round(v.clientes*100/mx))}%"></i></span><span class="nh-tpv"><b>${v.clientes}</b><small>cliente${v.clientes===1?'':'s'}</small></span></button>`).join('')}
+function nhRelFecha(){const m=$('nh_md');if(m)m.remove()}
+function nhRel(id){const v=(NHTOP||[]).find(x=>String(x.id)===String(id));if(!v)return;nhRelFecha();
+  const lj=v.loja_id?(ljNome(v.loja_id)||v.loja_id):(v.concessionaria||'Sem loja definida'),it=[['Clientes cadastrados',v.clientes||0],['Visitas no site',v.visitas||0],['Visitantes diferentes',v.visitantes],['Visitas hoje',v.visitas_hoje]].filter(x=>x[1]!==undefined&&x[1]!==null),m=document.createElement('div');
+  m.id='nh_md';m.className='nh-md';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.onclick=e=>{if(e.target===m)nhRelFecha()};
+  m.innerHTML=`<div class="nh-mb"><div class="nh-mh"><span class="a9-av">${esc(nhIni(v.nome))}</span><div><b>${esc(v.nome)}</b><small>/${esc(v.slug||'')}</small></div></div><p class="nh-ml">🏬 ${esc(lj)}</p><p class="nh-mp">Relatório dos últimos 30 dias</p><div class="nh-mg">${it.map(x=>`<div><b>${x[1]}</b><small>${x[0]}</small></div>`).join('')}</div><div class="nh-ma"><button type="button" class="nh-tbb" onclick="nhRelFecha()">Fechar</button></div></div>`;
+  $('adm').appendChild(m)}
 async function nhTopCarrega(){if(!(NHTOP&&Date.now()-NHTOPT<60000)){try{const r=await sb.rpc('mestre_cadastro_clientes',{p_dias:30});if(r.error)throw r.error;NHTOP=r.data||[];NHTOPT=Date.now()}catch(e){NHTOP=NHTOP||[]}}const el=$('nh_top');if(el&&tab=='dash')el.innerHTML=nhTopHtml()}
 function nhDonut(){const C=[['Pagos',vgCount('pago'),'#2ee6a6'],['Não pagos',vgCount('nao'),'#ff6b78'],['Sócios',vgCount('socio'),'#8b7bff']],ou=Math.max(0,V.length-sum(C.map(c=>c[1])));if(ou)C.push(['Outros',ou,'#8b97ad']);const tot=sum(C.map(c=>c[1]));
   if(!tot)return '<p class="mu2">Nenhum vendedor cadastrado ainda.</p>';let off=25;const seg=C.map(c=>{const p=c[1]*100/tot,l=Math.max(p-(p<100?1:0),0),s=`<circle r="15.9155" cx="21" cy="21" fill="none" stroke="${c[2]}" stroke-width="5" stroke-dasharray="${l.toFixed(2)} ${(100-l).toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"/>`;off-=p;return s}).join('');
@@ -3323,6 +3329,12 @@ setTimeout(()=>{let pend=null;try{pend=localStorage.getItem('ps_pix')}catch(e){}
 html body #admtop,html body #adm .adm-top{display:none!important}
 html body #adm#adm .w{padding-top:0!important;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))!important}
 html body #adm#adm #agw iframe{height:calc(100dvh - 210px)}
+#adm .nh-md{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:18px;background:#000a;backdrop-filter:blur(4px)}
+#adm .nh-mb{width:min(420px,100%);padding:20px;border-radius:22px;background:var(--nh-card);border:1px solid var(--ln2);box-shadow:0 30px 80px -20px #000;color:var(--tx)}
+#adm .nh-mh{display:flex;align-items:center;gap:12px}#adm .nh-mh>div{min-width:0}#adm .nh-mh b{display:block;font:800 18px Sora,Inter,sans-serif;overflow-wrap:anywhere}#adm .nh-mh small{color:var(--mu);font-size:13px}
+#adm .nh-ml{margin:14px 0 2px;font-weight:700;font-size:15px}#adm .nh-mp{margin:0 0 14px;color:var(--mu);font-size:13px}
+#adm .nh-mg{display:grid;grid-template-columns:1fr 1fr;gap:10px}#adm .nh-mg div{padding:14px;border-radius:16px;border:1px solid var(--ln2)}#adm .nh-mg b{display:block;font:800 26px/1.1 Sora,Inter,sans-serif;font-variant-numeric:tabular-nums}#adm .nh-mg small{display:block;margin-top:4px;color:var(--mu);font-size:12.5px}
+#adm .nh-ma{display:flex;justify-content:flex-end;margin-top:16px}
 /* cabeçalho */
 #adm .nh{display:flex;align-items:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) 0 14px}
 #adm .nh-lg svg{height:46px;width:auto;display:block}
